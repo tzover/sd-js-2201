@@ -65,15 +65,15 @@ docker-compose exec app bash
 
     // Function (es5)
     const func1 = function (str) {
-    return str
+      return str
     }
     function func2(str) {
-    return str
+      return str
     }
 
     // アロー関数
     const func3 = (str) => {
-    return str
+      return str
     }
 
     // Call functions
@@ -116,4 +116,182 @@ docker-compose exec app bash
     func6です。
     ```
 
-  -
+  - ES5 と ES6 での map 関数記述方法の違い
+
+    ```
+    // ES5
+    [1, 2, 3].map(function(n) {
+      return n + 1
+    })
+
+    // ES6
+    [1, 2, 3].map((n) => n + 1)
+
+    ---
+    touch src/map.js
+
+    ---
+    const result = [1, 2, 3].map((n) => n + 1)
+    console.log(result)
+    ---
+
+    node src/map.js
+
+    ---
+    // Output
+    [2, 3, 4]
+    ```
+
+  - Constructor
+
+    ```
+    touch src/constructor.js
+
+    ---
+    // constructor
+
+    // basic
+    function Cat(name) {
+      this.name = name
+    }
+
+    const cat = new Cat('mike')
+    console.log(cat)
+
+    // this function
+    function showThis() {
+      console.log(this)
+    }
+    showThis() // => Window
+
+    // call of method and this
+    const foo = { name: 'Foo' }
+    foo.showThis = showThis
+    foo.showThis()
+
+    const obj = {
+    getThis: function () {
+      return this
+    },
+    }
+
+    console.log(obj.getThis() === obj) // true
+
+    const getThis = obj.getThis
+
+    console.log(getThis() === obj) // false
+
+    // Allow Function
+
+    const allowShowThis = () => {
+      console.log(this)
+    }
+    allowShowThis() // {}
+
+    const allowFoo = { name: 'Foo' }
+    allowFoo.allowShowThis = allowShowThis
+    allowFoo.allowShowThis() // {}
+
+    const foo2 = {
+      getGetThis: function () {
+        const getThis = () => {
+          return this
+        }
+        return getThis
+      },
+    }
+
+    const getThis2 = foo2.getGetThis()
+    console.log(getThis2() === foo2) // true
+
+    // arguments
+
+    function showArg() {
+      console.log(arguments)
+    }
+    showArg('a', 'b', 'c') // [Arguments] { '0': 'a', '1': 'b', '2': 'c' }
+
+    // same arguments
+    function showArg2(a, a, a) {
+      console.log(a)
+    }
+    showArg2('a', 'b', 'c') // c
+
+    // allow func
+    // const showArg3 = (a, a) => {} // error
+
+    // Function with the same name
+    function sameFunc() {
+      console.log('No.1')
+    }
+    function sameFunc() {
+      console.log('No.2')
+    }
+    sameFunc() // No.2
+
+    // allow func
+    // const sameFunc2 = () => {
+    //   console.log('No.1')
+    // }
+    // const sameFunc2 = () => {
+    //   console.log('No.2')
+    // }
+
+    // sameFunc2() // Error
+
+    ---
+
+    node src/constructor.js
+
+    ---
+    // Output
+    Cat { name: 'mike' }
+    <ref *1> Object [global] {
+      global: [Circular *1],
+      clearInterval: [Function: clearInterval],
+      clearTimeout: [Function: clearTimeout],
+      setInterval: [Function: setInterval],
+      setTimeout: [Function: setTimeout] {
+        [Symbol(nodejs.util.promisify.custom)]: [Getter]
+      },
+      queueMicrotask: [Function: queueMicrotask],
+      performance: Performance {
+        nodeTiming: PerformanceNodeTiming {
+          name: 'node',
+          entryType: 'node',
+          startTime: 0,
+          duration: 56.171499997377396,
+          nodeStart: 0.3709999993443489,
+          v8Start: 2.1314589977264404,
+          bootstrapComplete: 35.433458998799324,
+          environment: 20.178958997130394,
+          loopStart: -1,
+          loopExit: -1,
+          idleTime: 0
+        },
+        timeOrigin: 1643514993647.405
+      },
+      clearImmediate: [Function: clearImmediate],
+      setImmediate: [Function: setImmediate] {
+        [Symbol(nodejs.util.promisify.custom)]: [Getter]
+      }
+    }
+    { name: 'Foo', showThis: [Function: showThis] }
+    true
+    false
+    {}
+    {}
+    true
+    [Arguments] { '0': 'a', '1': 'b', '2': 'c' }
+    c
+    No.2
+    ```
+
+  - Callback function
+
+    ```
+    touch src/callback.js
+
+    ---
+
+    ```
