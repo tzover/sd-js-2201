@@ -344,3 +344,83 @@ docker-compose exec app bash
     undefinedyen.
     100yen.
     ```
+
+## Arguments
+
+- JavaScript には引数チェックが無いため、関数宣言時の引数に対して呼び出し時の引数が不足していても多くても問題なく実行される（少ない場合は undefined になる）
+
+  ```
+  touch src/args.js
+
+  ---
+  function increment(num) {
+    if (num === undefined) {
+      throw new Error('Please input arguments')
+    }
+    return num++
+  }
+  // console.log(increment())
+  console.log(increment(2))
+  console.log(increment(2, 3))
+
+  function showArgs(num1, num2) {
+    console.log(num1, num2)
+  }
+  showArgs(1)
+  showArgs(1, 2)
+
+  // allow func
+  const allowShowArgs = (num1, num2) => {
+    console.log(num1, num2)
+  }
+  allowShowArgs(1)
+  ---
+
+  node src/args.js
+
+  ---
+  // Output
+  2
+  2
+  1 undefined
+  1 2
+  1 undefined
+  ```
+
+- 文字の長さを返す Length メソッドに Null を入れたときの挙動
+
+  ```
+  touch src/length.js
+
+
+  ---
+  function countCharacters(str) {
+    console.log('Doing')
+    return str.length
+  }
+  countCharacters(null) // Error
+  ---
+
+  node src/length.js
+
+  ---
+  // Output
+  TypeError: Cannot read properties of null (reading 'length')
+  at countCharacters (/home/node/app/src/length.js:3:14)
+  at Object.<anonymous> (/home/node/app/src/length.js:5:1)
+  at Module._compile (node:internal/modules/cjs/loader:1101:14)
+  at Object.Module._extensions..js (node:internal/modules/cjs/loader:1153:10)
+  at Module.load (node:internal/modules/cjs/loader:981:32)
+  at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+  at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:81:12)
+  at node:internal/main/run_main_module:17:47
+  ```
+
+- 引数の数をチェックする
+
+  ```
+  touch src/checkArgs.js
+
+  ---
+
+  ```
