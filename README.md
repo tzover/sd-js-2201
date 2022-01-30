@@ -422,5 +422,146 @@ docker-compose exec app bash
   touch src/checkArgs.js
 
   ---
+  function foo(a, b) {
+    if (arguments.length > 2) {
+     throw new Error('引数の数は2つまでです。')
+    }
+  }
+  foo(1, 2)
+  // foo(1, 2, 3) // error
 
+  // allow function
+  const foo2 = (a, b, ...othoers) => {
+   if (othoers.length > 0) {
+      throw new Error('引数の数は2つまでです。')
+    }
+  }
+  foo2(1, 2)
+  foo2(1, 2, 3) // error
+  ---
+
+  node src/checkArgs.js
+
+  ---
+  // Output
+  /home/node/app/src/checkArgs.js:3
+  throw new Error('引数の数は2つまでです。')
+  ^
+
+  Error: 引数の数は2つまでです。
+    at foo (/home/node/app/src/checkArgs.js:3:11)
+    at Object.<anonymous> (/home/node/app/src/checkArgs.js:7:1)
+    at Module._compile (node:internal/modules/cjs/loader:1101:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1153:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:81:12)
+    at node:internal/main/run_main_module:17:47
+  ```
+
+- 引数の型をチェックする
+
+  ```
+  touch src/checkArgType.js
+
+  ---
+  // typeof
+  console.log(typeof 1) // number
+
+  function increment(num) {
+    if (typeof num !== 'number') {
+      throw new Error('num should be type of number')
+    }
+   return num + 1
+  }
+  console.log(increment(1))
+  // increment('a') // Error
+
+  // instanceof
+  const array = [1, 2, 3]
+  console.log(array instanceof Array) // true
+  console.log(null instanceof Array) // false
+
+  function count(array) {
+    if (!(array instanceof Array)) {
+      throw new Error('array should be Array')
+    }
+    return array.length
+  }
+  console.log(count([1, 2, 3])) // 3
+  // console.log(count('123')) // Error
+
+  // null は objectになるため別の判定方法が必要
+  console.log(typeof { foo: 1 }) // object
+  console.log(typeof null) // object
+
+  function isObj(obj) {
+    if (typeof obj !== 'object' || obj === null) {
+      throw new Error('obj should be type of object')
+    }
+    if (typeof obj.name !== 'string') {
+      throw new Error('obj.name should be type of string')
+    }
+  }
+  isObj({ name: 'yt' })
+  // isObj('name') // Error
+  // isObj({ name: true }) // Error
+  ---
+
+  node src/checkArgType.js
+
+  ---
+  // Output
+  number
+  2
+  true
+  false
+  3
+  object
+  object
+  /home/node/app/src/checkArgType.js:36
+    throw new Error('obj.name should be type of string')
+    ^
+
+  Error: obj.name should be type of string
+    at isObj (/home/node/app/src/checkArgType.js:36:11)
+    at Object.<anonymous> (/home/node/app/src/checkArgType.js:41:1)
+    at Module._compile (node:internal/modules/cjs/loader:1101:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1153:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:81:12)
+    at node:internal/main/run_main_module:17:47
+  ```
+
+- 引数の初期値
+
+  ```
+  touch src/defaultArgs.js
+
+  ---
+  const sayHello = (name) => console.log(`こんにちは!${name}さん!`)
+  sayHello()
+  sayHello('yt')
+
+  // 初期値代入
+  const sayHello2 = (name = 'yt') => console.log(`こんにちは!${name}さん!`)
+  sayHello2()
+  ---
+
+  node src/defaultArgs.js
+
+  ---
+  // Output
+  こんにちは!undefinedさん!
+  こんにちは!ytさん!
+  こんにちは!ytさん!
+  ```
+
+### Spred
+
+- 残余引数と分割代入
+
+  ```
+  touch src/spred.js
   ```
